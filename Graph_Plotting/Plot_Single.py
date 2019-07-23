@@ -11,6 +11,7 @@ parser.add_argument('-t', '--plot_type', help='plot cv, iv or it', type=str, def
 parser.add_argument('-th', '--plot_temp_and_hum', help='include temperature and humidity', default=True)
 parser.add_argument('-f', '--plot_fits', help='plot the appropriate fit', default=True)
 parser.add_argument('-av', '--choose_average', help='calculate the average using the median or mean', type=str, default='mean')
+parser.add_argument('-r', '--remove_anomolous', help='remove an anomolous point', type =int, nargs='+', default= None)
 
 
 # Method to convert a string input into the correct boolean
@@ -45,12 +46,17 @@ def main():
     plot_th = input_boolean(args.plot_temp_and_hum)
     plot_fit = input_boolean(args.plot_fits)
     average = args.choose_average
+    remove = args.remove_anomolous
 
     # Extract the data
     data = Data()
     data.name = name
     data.type = plot_type
     data.extract_data(input_path, average)
+
+    if remove is not None:
+        for i in range(len(remove)):
+            data.remove_anomalies(i)
 
     # Plot the graph
     plot = Plot()
