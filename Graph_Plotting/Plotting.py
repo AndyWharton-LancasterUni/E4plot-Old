@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from Get_Data import Data
 import Fitting
 import os
+from scipy import stats
 
 
 class Plot:
@@ -23,6 +24,7 @@ class Plot:
             self.plot_iv(th, fits, data)
         # Save the graph
         self.save_graph(output_folder, data)
+
 
     # Hides the humidity x axis if using
     def make_patch_spines_invisible(ax):
@@ -52,6 +54,33 @@ class Plot:
     def plot_it(self, th, fits, it=Data()):
         # Converts time from seconds to hours
         it.time_to_hours()
+
+        """
+        # A very rough method of trying to ignore anomalous points in the It data
+        mean_current= sum(it.i_mean)/len(it.i_mean)
+        mean_error = stats.sem(it.i_mean)
+        main_data_i = []
+        main_data_t = []
+        main_data_ierror =[]
+        bad_data_i = []
+        bad_data_t = []
+        bad_data_ierror = []
+        for i in range(len(it.i_mean)):
+            if mean_current+(100 * mean_error) > it.i_mean[i] > mean_current - (100* mean_error):
+                main_data_t.append(it.time[i])
+                main_data_i.append(it.i_mean[i])
+                main_data_ierror.append(it.i_error[i])
+            else:
+                bad_data_t.append(it.time[i])
+                bad_data_i.append(it.i_mean[i])
+                bad_data_ierror.append(it.i_error[i])
+                
+        current_line = self.fig.host.errorbar(x=main_data_t, y=main_data_i, yerr=main_data_ierror, fmt='r.',
+                                              label='Current')
+        current_line2 = self.fig.host.errorbar(x=bad_data_t, y=bad_data_i, yerr=bad_data_ierror, fmt='r.', alpha=0.5,
+                                               label='Current')
+        """
+
         # Plot the current data
         current_line = self.fig.host.errorbar(x=it.time, y=it.i_mean, yerr=it.i_error, fmt='r.', label='Current')
         # Set y axis range
