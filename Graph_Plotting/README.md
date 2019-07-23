@@ -44,7 +44,7 @@ Plot_Single.py requires one input, the path to the file you wish to plot.
 
 Run it in the command line:
 
-`python Plot_Single.py file_path -n name -o output_directory -t plot_type  -th plot_temp_and_hum -f plot_fits -av choose_average`
+`python Plot_Single.py file_path -n name -o output_directory -t plot_type  -th plot_temp_and_hum -f plot_fits -av choose_average -r remove_anomalous`
 
 * Required Inputs
     *  file_path --> The path to the file containing the data to be plotted (including .txt)
@@ -55,10 +55,11 @@ Run it in the command line:
    *  plot_temp_and_hum --> Controls if the graph is plotted with temperature and humidity, the default is yes, to switch off enter `n`
    *  plot_fits --> Include the appropriate fit for the graph the default is yes, to switch off enter `n`
    *  choose_average --> This decides whether to calculate the current and/or capacitance using the mean or the median, the default is mean, to change enter `median`
+   * remove_anomalous --> This prevents certain points being plotted, enter the index of the point(s) that should be ignored. Remember that python counts from 0.
 
-Example: `python Plot_Single.py <path_to_folder/Sensor.txt> -n "Sensor IV Curve" -t iv -th n`
+Example: `python Plot_Single.py <path_to_folder/Sensor.txt> -n "Sensor IV Curve" -t iv -th n -r 5`
 
-This will plot an IV curve with the breakdown voltage plotted but no temperature and humidity lines and will save it in an IV folder in the same folder as the data. The title will be Sensor IV Curve.
+This will plot an IV curve with the breakdown voltage plotted but no temperature and humidity lines and will save it in an IV folder in the same folder as the data. The title will be Sensor IV Curve. It will not plot the 6th data point.
 
 ## Improvements
 
