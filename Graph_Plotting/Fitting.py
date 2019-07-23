@@ -2,6 +2,7 @@ from linfit.linfit import linfit
 import numpy as np
 import math
 import copy
+from scipy import stats
 
 
 # Fit two linear lines to the data and find their intersection
@@ -90,20 +91,46 @@ def cv_fits(data):
 
     return output
 
+
 # Find if the difference between the largest current and the smallest current is greater than 25%
 def it_fits(data):
+    """
+    # A very rough method of trying to ignore anomalous points in the It data
+    mean_current = sum(data.i_mean) / len(data.i_mean)
+    mean_error = stats.sem(data.i_mean)
+    main_data_i = []
+    main_data_t = []
+    main_data_ierror = []
+    bad_data_i = []
+    bad_data_t = []
+    bad_data_ierror = []
+    for i in range(len(data.i_mean)):
+        if mean_current + (100 * mean_error) > data.i_mean[i] > mean_current - (100 * mean_error):
+            main_data_t.append(data.time[i])
+            main_data_i.append(data.i_mean[i])
+            main_data_ierror.append(data.i_error[i])
+        else:
+            bad_data_t.append(data.time[i])
+            bad_data_i.append(data.i_mean[i])
+            bad_data_ierror.append(data.i_error[i])
+
+    minimum_y = min(main_data_i)
+    maximum_y = max(main_data_i)
+    """
     # Largest current
     minimum_y = min(data.i_mean)
     # Smallest allowed current
     max_allowed_y = minimum_y * 0.75
     # Smallest current
     maximum_y = max(data.i_mean)
+
     if maximum_y > max_allowed_y:
         pass_or_fail = 'Fail'
     else:
         pass_or_fail = 'Pass'
 
     return minimum_y, maximum_y, max_allowed_y, pass_or_fail
+
 
 # Find when breakdown occurs - when increases by 20% or more between two consecutive measurements
 def breakdown_voltage(data):
@@ -118,6 +145,7 @@ def breakdown_voltage(data):
         return [bd_voltage, f'Breakdown occurs at {bd_voltage}V']
     else:
         return [None, 'Breakdown has not been reached']
+
 
 # Rounding
 def round_sig(x, sig=2):
